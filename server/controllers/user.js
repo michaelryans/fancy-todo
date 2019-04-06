@@ -1,13 +1,16 @@
 require('dotenv').config()
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 
 class UserController {
     static create(req,res) {
         User.create({
             email:req.body.email,
-            password:req.body.password
+            password:req.body.password,
+            name: req.body.name,
+            password: bcrypt.hashSync(req.body.password, 10)
         })
         .then(user_created => {
             res.status(201).json(user_created)
@@ -37,6 +40,7 @@ class UserController {
             .then(data => {
                 //put password randomizer later
                 if(!data) {
+                    const random = Math.random().toString(36).substring(2, 15)
                     console.log('masuk create user dari google sign in')
                     User.create({
                         id: payload.sub,
@@ -54,7 +58,11 @@ class UserController {
                             role:created.role
                         }, process.env.JWT_TOKEN)
 
-                        res.status(201).json(server_token)
+                        res.status(201).json({
+                            token:server_token,
+                            name:created.name,
+                            message:"google sign in success"
+                        })
                     })
                     .catch(err => {
                         res.status(500).json({
@@ -70,7 +78,11 @@ class UserController {
                         role:data.role
                     }, process.env.JWT_TOKEN)
 
-                    res.status(201).json(server_token)
+                    res.status(201).json({
+                        token:server_token,
+                        name:data.name,
+                        message:"google sign in success"
+                    })
                 }
             })
         })
@@ -80,8 +92,24 @@ class UserController {
         User.findOne({email:req.body.email})
         .then(found => {
             if(found) {
-                res.json(found)
+                bcrypt.compareSync(req.body.password, found.password)
+                const server_token = jwt.sign({
+                    email:found.email,
+                    name:found.name,
+                    role:found.role
+                }, process.env.JWT_TOKEN)
+                
+                res.status(200).json({
+                    token:server_token,
+                    message:"login success"
+                })
             }
+        })
+        .catch(err => {
+            res.status(401).json({
+                error: err,
+                message:"wrong email/password"
+            })
         })
     }
 }

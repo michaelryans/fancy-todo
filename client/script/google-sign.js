@@ -8,10 +8,16 @@ function onSignIn(googleUser) {
     //successful login get user token --> server
     var id_token = googleUser.getAuthResponse().id_token;
     $.post('http://localhost:3000/google-login', {token:id_token})
-    .done(function(user_jwt) {
-        localStorage.setItem('token', user_jwt)
-        console.log(user_jwt)
-        console.log('user token jwt accepted')
+    .done(function(data) {
+
+        localStorage.setItem('token', data.token)
+        console.log('user name & token jwt accepted')
+
+        // swal({
+        //   title: "Login success!",
+        //   text: `Welcome ${data.name} to Fancy Todo List!`,
+        //   icon: "success"
+        // });
     })
     .fail(err => {
         console.log(err)
