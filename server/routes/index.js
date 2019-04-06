@@ -3,6 +3,15 @@ const userController = require('../controllers/user')
 const taskController = require('../controllers/task')
 
 
+router.post('/test', (req,res) => {
+    console.log('masuk test')
+    console.log('--------------- req body-----------')
+    console.log(req.body)
+    res.json(req.body)
+})
+
+
+
 router.post('/login', userController.login)
 
 //google login
