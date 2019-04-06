@@ -1,4 +1,7 @@
+require('dotenv').config()
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
 
 class UserController {
     static create(req,res) {
@@ -15,7 +18,69 @@ class UserController {
                 message: "gagal create user"
             })
         })
-    }    
+    }
+    
+    static googleLogin(req,res) {
+        const CLIENT_ID = process.env.CLIENT_ID
+        const token = req.body.token
+        const {OAuth2Client} = require('google-auth-library');
+        const client = new OAuth2Client(CLIENT_ID);
+
+        client.verifyIdToken({
+            idToken: token,
+            audience: CLIENT_ID
+        })
+        .then(ticket => {
+            const payload = ticket.getPayload();
+
+            User.findOne({email:payload.email})
+            .then(data => {
+                //put password randomizer later
+                if(!data) {
+                    console.log('masuk create user dari google sign in')
+                    User.create({
+                        id: payload.sub,
+                        name: payload.name,
+                        email: payload.email,
+                        password: 'hahahhaa nanti di hash',
+                        image: payload.image,
+                        role:"user"
+                    })
+                    .then(created => {
+                        console.log('sign in google - data created')
+                        const server_token = jwt.sign({
+                            name:created.name,
+                            email:created.email,
+                            role:created.role
+                        }, process.env.JWT_TOKEN)
+
+                        res.status(201).json(server_token)
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            error: err,
+                            message: "gagal create user - google sign in"
+                        })
+                    })
+                } else {
+                    console.log('data ada')
+                    const server_token = jwt.sign({
+                        name:data.name,
+                        email:data.email,
+                        role:data.role
+                    }, process.env.JWT_TOKEN)
+
+                    res.status(201).json(server_token)
+                }
+            })
+        })
+
+        
+        
+
+
+
+    }
 }
 
 

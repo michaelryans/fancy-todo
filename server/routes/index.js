@@ -7,6 +7,8 @@ router.get('/login', (req,res) => {
     res.json('routing sudah jalan')
 })
 
+router.post('/google-login', userController.googleLogin)
+
 //task
 router.post('/task', taskController.create)
 
