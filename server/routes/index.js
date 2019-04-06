@@ -12,7 +12,7 @@ router.post('/task', taskController.create)
 
 
 //user
-router.post('user', userController.register)
+router.post('/user', userController.create)
 
 
 module.exports = router
