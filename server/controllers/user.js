@@ -74,12 +74,15 @@ class UserController {
                 }
             })
         })
+    }
 
-        
-        
-
-
-
+    static login(req,res) {
+        User.findOne({email:req.body.email})
+        .then(found => {
+            if(found) {
+                res.json(found)
+            }
+        })
     }
 }
 

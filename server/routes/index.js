@@ -3,10 +3,9 @@ const userController = require('../controllers/user')
 const taskController = require('../controllers/task')
 
 
-router.get('/login', (req,res) => {
-    res.json('routing sudah jalan')
-})
+router.post('/login', userController.login)
 
+//google login
 router.post('/google-login', userController.googleLogin)
 
 //task

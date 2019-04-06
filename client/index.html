@@ -5,8 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fancy To-do</title>
+
+    <!-- google login script & meta-->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="655523201289-jst7eo80qn70gagnn6p32ei4gdnb8lcb.apps.googleusercontent.com">
+
+    <!-- jQuery script -->
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
 </head>
 <body>
     
+    <!-- google sign in -->
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+
+
+    <script src="./script/google-sign.js"></script>
+    <script src="./script/main.js"></script>
 </body>
 </html>
