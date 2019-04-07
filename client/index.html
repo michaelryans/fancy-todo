@@ -1,12 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Fancy To-do</title>
+
+    <!-- stylesheet -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- google login script & meta-->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+        content="655523201289-jst7eo80qn70gagnn6p32ei4gdnb8lcb.apps.googleusercontent.com">
+
+    <!-- bootstrap n js & css-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- jQuery script -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <!-- sweet alert test -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
+
+
+
 <body>
-    
+
+    <div class="bgimg">
+        <div class="topleft">
+            <p>Logo</p>
+        </div>
+        <div class="middle">
+            <h1>Welcome to Fancy Todo</h1>
+            <hr>
+            <!-- Button trigger modal login -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+                id="login-button">
+                Login
+            </button>
+
+            <!-- Button trigger modal Register -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter2"
+                id="register-button">
+                Register
+            </button>
+        </div>
+        <div class="bottomleft">
+            <p>Portofolio</p>
+        </div>
+    </div>
+
+    <!-- Button trigger modal login -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+    id="login-button">
+    Login -->
+    </button>
+
+    <!-- Button trigger modal Register -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter2"
+    id="register-button">
+    Register
+    </button> -->
+    <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+    <!-- <a href="#" onclick="signOut();" class="g-signout2">Sign out</a> -->
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Fancy Todo</a>
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+
+                </li>
+                <li class="nav-item dropdown">
+
+
+                </li>
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
+            <a href="#" onclick="signOut();" class="g-signout2">Sign out</a>
+        </div>
+    </nav>
+
+
+
+    <div class="container middle">
+        <div class="row">
+            <div class="col-3 bord">
+                <h3>Input Task</h3>
+                <br>
+
+
+
+                <form id="form-task" action="http://localhost:3000/task">
+                    <label for="task-name">Task:</label>
+                    <input type="text" name="task" id="task-name" class="form-control">
+
+                    <label for="task-description">Task Description:</label>
+                    <textarea type="textarea" name="task" id="task-description" class="form-control"></textarea>
+
+                    <label for="task-date">Due Date</label>
+                    <input type="date" name="date" id="task-date" class="form-control">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+            </div>
+            <div class="col-7 bord-grow bord" id="main-div-right">
+                <h3>Task List</h3><br>
+                <!-- tasklist -->
+                <div id="task-list">
+                    <table class="table css-serial">
+                        <thead>
+                            <tr>
+                                <th scope="col-1">#</th>
+                                <th scope="col-2">Task</th>
+                                <th scope="col-2">Due Date</th>
+                                <th scope="col-3">Description</th>
+                                <th scope="col-1">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-list-table">
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- google sign in -->
+    <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();" class="g-signout2">Sign out</a> -->
+
+
+
+    <!-- Button trigger modal login -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+        id="login-button">
+        Login
+    </button> -->
+
+    <!-- Button trigger modal Register -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter2"
+        id="register-button">
+        Register
+    </button> -->
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Login Page</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form>
+                        <div class="form-group">
+                            <label for="login-email">Email address</label>
+                            <input type="email" class="form-control" id="login-email" aria-describedby="emailHelp"
+                                placeholder="Enter email">
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" class="form-control" id="login-password" placeholder="Password">
+                        </div>
+                    </form>
+                    <label>Or login with Google:</label>
+                    <div class="g-signin2" data-onsuccess="onSignIn" data-dismiss="modal"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal"
+                        onclick="loginByEmail()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Register -->
+    <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-email">Email address</label>
+                            <input type="email" class="form-control" id="register-email" aria-describedby="emailHelp"
+                                placeholder="Enter email">
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-name">Name</label>
+                            <input type="text" class="form-control" id="register-name" aria-describedby="emailHelp"
+                                placeholder="Enter Name">
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                                else.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" class="form-control" id="register-password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password-confirm">Confirm Password</label>
+                            <input type="password" class="form-control" id="register-password-confirm"
+                                placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" data-dismiss="modal"
+                        onclick="registerByEmail()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- script -->
+    <script src="./script/main.js"></script>
+    <script src="./script/google-sign.js"></script>
 </body>
+
 </html>

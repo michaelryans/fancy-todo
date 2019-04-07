@@ -1,18 +1,31 @@
 const router = require('express').Router()
 const userController = require('../controllers/user')
 const taskController = require('../controllers/task')
+const {isLogin} = require('../middlewares/authentication')
 
 
-router.get('/login', (req,res) => {
-    res.json('routing sudah jalan')
+router.post('/test', (req,res) => {
+    console.log('masuk test')
+    console.log('--------------- req body-----------')
+    console.log(req.body)
+    res.json(req.body)
 })
 
-//task
-router.post('/task', taskController.create)
 
+
+router.post('/login', userController.login)
+
+//google login
+router.post('/google-login', userController.googleLogin)
+
+//task
+router.post('/task', isLogin, taskController.create)
+router.get('/task', isLogin, taskController.findAll)
+router.patch('/task', taskController.updateStatus)
+router.delete('/task', taskController.deleteTask)
 
 //user
-router.post('user', userController.register)
+router.post('/user', userController.create)
 
 
 module.exports = router
