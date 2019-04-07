@@ -12,12 +12,12 @@ function onSignIn(googleUser) {
 
         localStorage.setItem('token', data.token)
         console.log('user name & token jwt accepted')
-
-        // swal({
-        //   title: "Login success!",
-        //   text: `Welcome ${data.name} to Fancy Todo List!`,
-        //   icon: "success"
-        // });
+        swal({
+          title: "Login success!",
+          text: `Welcome ${data.name} to Fancy Todo List!`,
+          icon: "success"
+        });
+        hideLogin()
     })
     .fail(err => {
         console.log(err)
@@ -31,5 +31,8 @@ function onSignIn(googleUser) {
     auth2.signOut().then(function () {
       console.log('User signed out.');
     });
+    localStorage.clear()
+    //$('#task-list-table').val() = "no data yet"
+    hideLogout()
   }
 

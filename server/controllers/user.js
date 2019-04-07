@@ -53,6 +53,7 @@ class UserController {
                     .then(created => {
                         console.log('sign in google - data created')
                         const server_token = jwt.sign({
+                            _id:created._id,
                             name:created.name,
                             email:created.email,
                             role:created.role
@@ -73,10 +74,12 @@ class UserController {
                 } else {
                     console.log('data ada')
                     const server_token = jwt.sign({
+                        _id:data._id,
                         name:data.name,
                         email:data.email,
                         role:data.role
                     }, process.env.JWT_TOKEN)
+
 
                     res.status(201).json({
                         token:server_token,
@@ -89,20 +92,29 @@ class UserController {
     }
 
     static login(req,res) {
+        // console.log(`ini reqbody`)
+        // console.log(req.body)
         User.findOne({email:req.body.email})
         .then(found => {
-            if(found) {
-                bcrypt.compareSync(req.body.password, found.password)
+            // console.log('masuk try lhoo')
+            const loggedIn = bcrypt.compareSync(req.body.password, found.password)
+            if(loggedIn) {
+                console.log(found)
                 const server_token = jwt.sign({
+                    _id:found._id,
                     email:found.email,
                     name:found.name,
                     role:found.role
                 }, process.env.JWT_TOKEN)
-                
+                console.log('server token')
+                console.log(server_token)
                 res.status(200).json({
+                    name:found.name,
                     token:server_token,
                     message:"login success"
                 })
+            } else {
+                res.status(401).json("wrong credentials")
             }
         })
         .catch(err => {
@@ -112,6 +124,7 @@ class UserController {
             })
         })
     }
+
 }
 
 
