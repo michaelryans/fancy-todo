@@ -2,7 +2,7 @@ const Task = require('../models/task')
 
 class TaskController {
     static create(req,res) {
-        console.log('masuk sini')
+        //console.log('masuk sini')
         Task.create({
             user: req.decoded._id, //change later and models res
             name: req.body.name,
@@ -41,8 +41,8 @@ class TaskController {
     }
 
     static updateStatus(req,res) {
-        console.log('masuk update status')
-        console.log(req.body)
+        //console.log('masuk update status')
+        //console.log(req.body)
         Task.findOneAndUpdate({
             _id:req.body._id
         }, {status:true}, {new:true})
@@ -54,7 +54,7 @@ class TaskController {
             })
         })
         .catch(err => {
-            console.log('masuk catch')
+            //console.log('masuk catch')
             res.status(500).json({
                 error:err,
                 message:"update status failed"

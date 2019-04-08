@@ -41,7 +41,7 @@ class UserController {
                 //put password randomizer later
                 if(!data) {
                     const random = Math.random().toString(36).substring(2, 15)
-                    console.log('masuk create user dari google sign in')
+                    //console.log('masuk create user dari google sign in')
                     User.create({
                         id: payload.sub,
                         name: payload.name,
@@ -51,7 +51,7 @@ class UserController {
                         role:"user"
                     })
                     .then(created => {
-                        console.log('sign in google - data created')
+                        //console.log('sign in google - data created')
                         const server_token = jwt.sign({
                             _id:created._id,
                             name:created.name,
@@ -72,7 +72,7 @@ class UserController {
                         })
                     })
                 } else {
-                    console.log('data ada')
+                    //console.log('data ada')
                     const server_token = jwt.sign({
                         _id:data._id,
                         name:data.name,
@@ -81,7 +81,7 @@ class UserController {
                     }, process.env.JWT_TOKEN)
 
 
-                    res.status(201).json({
+                    res.status(200).json({
                         token:server_token,
                         name:data.name,
                         message:"google sign in success"
@@ -106,8 +106,8 @@ class UserController {
                     name:found.name,
                     role:found.role
                 }, process.env.JWT_TOKEN)
-                console.log('server token')
-                console.log(server_token)
+                //console.log('server token')
+                //console.log(server_token)
                 res.status(200).json({
                     name:found.name,
                     token:server_token,
