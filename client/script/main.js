@@ -1,9 +1,3 @@
-// if(!localStorage.token) {
-
-// } else {
-
-// }
-
 $(document).ready(function() {
     if(localStorage.token) {
         getTaskData();
@@ -108,7 +102,7 @@ function updateStatus(input) {
         url:"http://localhost:3000/task"
     })
     .done(response => {
-        console.log(response)
+        //console.log(response)
         $(`#status-unique-${response.updated._id}`).text(response.updated.status)
     })
     .fail(error => {
@@ -176,6 +170,9 @@ $('#form-task').submit(event => {
             error: err,
             meesage: "gagal terima form balik untuk task"
         })
+        swal("Pembuatan task gagal", {
+            button: false,
+        });
     })
 })
 
@@ -192,8 +189,8 @@ function loginByEmail(e) {
         data: obj_login
     })
     .done(response => {
-        console.log('response login')
-        console.log(response)
+        //console.log('response login')
+        //console.log(response)
         getTaskData()
         localStorage.setItem('token', response.token)
         swal({

@@ -20,8 +20,10 @@ function onSignIn(googleUser) {
         hideLogin()
     })
     .fail(err => {
-        console.log(err)
-        console.log("google login fail")
+        //console.log(err)
+        swal("Google Login failed, please try again", {
+          button: false,
+        });
     })
 
 }
