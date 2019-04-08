@@ -5,7 +5,7 @@ module.exports = {
             if(req.headers.token) {
                 const decoded = jwt.verify(req.headers.token, process.env.JWT_TOKEN)
                 req.decoded = decoded
-                console.log(decoded)
+                //console.log(decoded)
     
                 next()
             } else {
