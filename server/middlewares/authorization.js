@@ -1,13 +1,21 @@
+const Task = require('../models/task')
+
+
 module.exports = {
     isAuthorized: (req,res,next) => {
         try {
-            if(req.decoded._id === req.body.id) {
-                next()
-            }
+            Task.findOne({
+                _id:req.params.id
+            })
+            .then(found => {
+                if(found.user == req.decoded._id) {
+                    next()
+                }
+            })
         }
         catch {
             res.status(403).json({
-                message: "gagal authorisasi, token tidak tersedia"
+                message: "gagal authorisasi"
             })
         }
     }

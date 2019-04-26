@@ -1,7 +1,8 @@
 require('dotenv').config()
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const {jwtEncrypt} = require('../helpers/jwt')
+const {bcryptHashSync} = require('../helpers/bcrypt')
+const {bcryptCompareSync} = require('../helpers/bcrypt')
 
 
 class UserController {
@@ -10,7 +11,7 @@ class UserController {
             email:req.body.email,
             password:req.body.password,
             name: req.body.name,
-            password: bcrypt.hashSync(req.body.password, 10)
+            password: bcryptHashSync(req.body.password)
         })
         .then(user_created => {
             res.status(201).json(user_created)
@@ -24,70 +25,58 @@ class UserController {
     }
     
     static googleLogin(req,res) {
-        const CLIENT_ID = process.env.CLIENT_ID
-        const token = req.body.token
-        const {OAuth2Client} = require('google-auth-library');
-        const client = new OAuth2Client(CLIENT_ID);
+        const payload = req.payload
+        User.findOne({email:payload.email})
+        .then(data => {
+            //put password randomizer later
+            if(!data) {
+                const random = Math.random().toString(36).substring(2, 15)
+                //console.log('masuk create user dari google sign in')
+                User.create({
+                    id: payload.sub,
+                    name: payload.name,
+                    email: payload.email,
+                    password: bcryptHashSync(random),
+                    image: payload.image,
+                    role:"user"
+                })
+                .then(created => {
+                    //console.log('sign in google - data created')
+                    const data_token = {
+                        _id:created._id,
+                        name:created.name,
+                        email:created.email,
+                        role:created.role
+                    }
+                    const server_token = jwtEncrypt(data_token)
 
-        client.verifyIdToken({
-            idToken: token,
-            audience: CLIENT_ID
-        })
-        .then(ticket => {
-            const payload = ticket.getPayload();
-
-            User.findOne({email:payload.email})
-            .then(data => {
-                //put password randomizer later
-                if(!data) {
-                    const random = Math.random().toString(36).substring(2, 15)
-                    //console.log('masuk create user dari google sign in')
-                    User.create({
-                        id: payload.sub,
-                        name: payload.name,
-                        email: payload.email,
-                        password: 'hahahhaa nanti di hash',
-                        image: payload.image,
-                        role:"user"
-                    })
-                    .then(created => {
-                        //console.log('sign in google - data created')
-                        const server_token = jwt.sign({
-                            _id:created._id,
-                            name:created.name,
-                            email:created.email,
-                            role:created.role
-                        }, process.env.JWT_TOKEN)
-
-                        res.status(201).json({
-                            token:server_token,
-                            name:created.name,
-                            message:"google sign in success"
-                        })
-                    })
-                    .catch(err => {
-                        res.status(500).json({
-                            error: err,
-                            message: "gagal create user - google sign in"
-                        })
-                    })
-                } else {
-                    //console.log('data ada')
-                    const server_token = jwt.sign({
-                        _id:data._id,
-                        name:data.name,
-                        email:data.email,
-                        role:data.role
-                    }, process.env.JWT_TOKEN)
-
-
-                    res.status(200).json({
+                    res.status(201).json({
                         token:server_token,
-                        name:data.name,
+                        name:created.name,
                         message:"google sign in success"
                     })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err,
+                        message: "gagal create user - google sign in"
+                    })
+                })
+            } else {
+                //console.log('data ada')
+                const data_token = {
+                    _id:data._id,
+                    name:data.name,
+                    email:data.email,
+                    role:data.role
                 }
-            })
+                const server_token = jwtEncrypt(data_token)
+                res.status(200).json({
+                    token:server_token,
+                    name:data.name,
+                    message:"google sign in success"
+                })
+            }
         })
     }
 
@@ -97,15 +86,16 @@ class UserController {
         User.findOne({email:req.body.email})
         .then(found => {
             // console.log('masuk try lhoo')
-            const loggedIn = bcrypt.compareSync(req.body.password, found.password)
+            const loggedIn = bcryptCompareSync(req.body.password, found.password)
             if(loggedIn) {
                 console.log(found)
-                const server_token = jwt.sign({
+                const data_token = {
                     _id:found._id,
                     email:found.email,
                     name:found.name,
                     role:found.role
-                }, process.env.JWT_TOKEN)
+                }
+                const server_token = jwtEncrypt(data_token)
                 //console.log('server token')
                 //console.log(server_token)
                 res.status(200).json({

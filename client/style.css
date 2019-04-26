@@ -8,8 +8,8 @@
 }
 
 #main-div-right {
-  height: 600px;
-  overflow: scroll;
+  /* height: 600px;
+  overflow: scroll; */
 }
   
 body, html {
@@ -60,4 +60,12 @@ div.row {
 
 div.col-3.bord {
 
+}
+
+button.btn.btn-primary {
+  margin-top: 15px;
+}
+
+label {
+  margin: 5px;
 }

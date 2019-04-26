@@ -34,3 +34,10 @@ Make sure Node.js is installed in your computer then run these commands:
 > `$ npm install` <br>
 > `$ npm start` <br>
 > `$ npm run dev` <br>
+
+
+
+## How this Todo Work
+* The task form is required to be filled. If the client is bypassed, then the date will be set 1 day after current date.
+* User must be logged in to view task.
+* The data will be saved on database.

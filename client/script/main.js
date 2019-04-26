@@ -1,14 +1,26 @@
 $(document).ready(function() {
     if(localStorage.token) {
+        
         getTaskData();
         hideLogin()
         
     } else {
         hideLogout()
         $('div.container').hide()
+        $('#navbar-main').hide()
     }
     
 }) 
+
+function clearForm() {
+    $('#task-name').val("")
+    $('#task-description').val("")
+    $('#task-date').val("")
+}
+
+function clearTable() {
+    $('#form-task').text()
+}
 
 function hideLogin() {
     //hide login and register
@@ -16,6 +28,9 @@ function hideLogin() {
     $('#login-button').hide()
     $('#register-button').hide()
     $('.bgimg').hide()
+
+    //show navbar
+    $('#navbar-main').show()
 
     //show logout
     $('.g-signout2').show()
@@ -33,6 +48,9 @@ function hideLogout() {
     $('#login-button').show()
     $('#register-button').show()
     $('.bgimg').show()
+
+    //hide navbar
+    $('#navbar-main').hide()
 }
 
 function dateParser(date) {
@@ -66,7 +84,9 @@ function getTaskData() {
         }
     })
     .done(response => {
+
         console.log(response)
+        $('#task-list-table').text("")
         for(let i = 0; i < response.length; i++) {
             response[i].unique = `${i}`
             
@@ -77,8 +97,8 @@ function getTaskData() {
                 <td id="dueDate-unique-${response[i]._id}">${dateParser(new Date(response[i].dueDate))}</td>
                 <td id="ddescription-unique-${response[i]._id}">${response[i].description}</td>
                 <td id="status-unique-${response[i]._id}">${response[i].status}</td>
-                <td><button onclick="updateStatus('${response[i]._id}')">Done</button>
-                <td><button onclick="deleteTask('${response[i]._id}')">Del</button>
+                <td><button onclick="updateStatus('${response[i]._id}')" type="button" class="btn btn-success">Update</button>
+                <td><button onclick="deleteTask('${response[i]._id}' type="button" class="btn btn-danger")">Del</button>
                 </tr>`
             )
             localStorage.lastUnique = i+1
@@ -93,17 +113,31 @@ function getTaskData() {
 }
 
 function updateStatus(input) {
+
+    let status_ganti = $(`#status-unique-${input}`).text();
+
+    if(status_ganti == "true") {
+        status_ganti = false
+    } else {
+        status_ganti = true;
+    }
+
+
     $.ajax({
         method:"PATCH",
         data: {
             _id: input,
             name: $(`#name-unique-${input}`).text(),
+            status: status_ganti,
         },
-        url:"http://localhost:3000/task"
+        headers: {
+            token: localStorage.token
+        },
+        url:"http://localhost:3000/task/"+input,
     })
     .done(response => {
-        //console.log(response)
         $(`#status-unique-${response.updated._id}`).text(response.updated.status)
+        getTaskData()
     })
     .fail(error => {
         console.log(error)
@@ -111,19 +145,21 @@ function updateStatus(input) {
 }
 
 function deleteTask(input) {
-    //console.log(input)
     $.ajax({
         method:"delete",
-        url:"http://localhost:3000/task",
-        data: {
-            _id:input
+        url:"http://localhost:3000/task/"+input,
+        headers: {
+            token:localStorage.token
         }
     })
     .done(response => {
-        $(`#table-unique-${response._id}`).hide()
+        getTaskData()
     })
     .fail(err => {
-        
+        console.log({
+            message:"masuk error delete task client",
+            error:err
+        })
     })
 }
 
@@ -137,7 +173,8 @@ $('#form-task').submit(event => {
 
     data = {
         name:$('#task-name').val(),
-        date:(new Date($('#task-date').val())).toISOString(),
+        date:$('#task-date').val(),
+        // date:(new Date($('#task-date').val())).toISOString(),
         description:$('#task-description').val(),
     }
     //console.log('masuk submit')
@@ -152,6 +189,7 @@ $('#form-task').submit(event => {
     })
     .done(response => {
         localStorage.lastUnique = localStorage.lastUnique || 0
+        clearForm()
         $('#task-list-table').append(
             `<tr id="table-unique-${Number(localStorage.lastUnique)+1}">
             <th scope="row">${Number(localStorage.lastUnique)+1}</th>
@@ -159,8 +197,8 @@ $('#form-task').submit(event => {
             <td id="dueDate-unique-${response._id}">${dateParser(new Date(response.dueDate))}</td>
             <td id="description-unique-${response._id}">${response.description}</td>
             <td id="status-unique-${response._id}">${response.status}</td>
-            <td><button onclick="updateStatus('${response._id}')">Done</button>
-            <td><button onclick="deleteTask('${response._id}')">Del</button>
+            <td><button onclick="updateStatus('${response._id}' type="button" class="btn btn-success")">Done</button>
+            <td><button onclick="deleteTask('${response._id}') type="button" class="btn btn-danger"">Del</button>
             </tr>`
         )
         localStorage.lastUnique = Number(localStorage.lastUnique)+ 1
@@ -191,6 +229,7 @@ function loginByEmail(e) {
     .done(response => {
         //console.log('response login')
         //console.log(response)
+        
         getTaskData()
         localStorage.setItem('token', response.token)
         swal({
@@ -235,7 +274,9 @@ function registerByEmail() {
             });
         })
         .fail(err => {
-            swal("Gagal membuat akun", {
+            // console.log(err)
+            // console.log(err.responseJSON.error.errors.email.message)
+            swal(err.responseJSON.error.errors.email.message, {
                 button: false,
               });
         })

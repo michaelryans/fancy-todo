@@ -76,7 +76,7 @@
     <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
     <!-- <a href="#" onclick="signOut();" class="g-signout2">Sign out</a> -->
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar-main">
         <a class="navbar-brand" href="#">Fancy Todo</a>
 
 
@@ -95,7 +95,7 @@
 
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <button class="btn btn-outline-success my-2 my-sm-0" onclick="">Search</button>
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             </form>
             <a href="#" onclick="signOut();" class="g-signout2">Sign out</a>
@@ -110,14 +110,12 @@
                 <h3>Input Task</h3>
                 <br>
 
-
-
                 <form id="form-task" action="http://localhost:3000/task">
                     <label for="task-name">Task:</label>
-                    <input type="text" name="task" id="task-name" class="form-control">
+                    <input type="text" name="task" id="task-name" class="form-control" required>
 
                     <label for="task-description">Task Description:</label>
-                    <textarea type="textarea" name="task" id="task-description" class="form-control"></textarea>
+                    <textarea type="textarea" name="task" id="task-description" class="form-control" required></textarea>
 
                     <label for="task-date">Due Date</label>
                     <input type="date" name="date" id="task-date" class="form-control">
@@ -137,6 +135,7 @@
                                 <th scope="col-2">Due Date</th>
                                 <th scope="col-3">Description</th>
                                 <th scope="col-1">Status</th>
+                                <th colspan="2">Action Button</th>
                             </tr>
                         </thead>
                         <tbody id="task-list-table">
@@ -244,7 +243,6 @@
                             <input type="password" class="form-control" id="register-password-confirm"
                                 placeholder="Password">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
 
 
@@ -252,7 +250,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" data-dismiss="modal"
-                        onclick="registerByEmail()">Login</button>
+                        onclick="registerByEmail()">Register</button>
                 </div>
             </div>
         </div>

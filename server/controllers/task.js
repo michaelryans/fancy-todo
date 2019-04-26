@@ -2,13 +2,19 @@ const Task = require('../models/task')
 
 class TaskController {
     static create(req,res) {
-        //console.log('masuk sini')
+        if(!req.body.date) {
+            let date = new Date();
+            //add 1 day
+            date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
+            req.body.date = date
+        }
+
         Task.create({
             user: req.decoded._id, //change later and models res
             name: req.body.name,
             description: req.body.description,
             status: false,
-            dueDate: new Date()
+            dueDate: req.body.date,
         })
         .then(created => {
             res.status(201).json(created)
@@ -41,20 +47,16 @@ class TaskController {
     }
 
     static updateStatus(req,res) {
-        //console.log('masuk update status')
-        //console.log(req.body)
         Task.findOneAndUpdate({
-            _id:req.body._id
-        }, {status:true}, {new:true})
+            _id:req.params.id
+        }, {status:req.body.status}, {new:true})
         .then(updated => {
-            console.log('masuk then')
             res.status(200).json({
                 updated:updated,
                 message:`Status updated!`
             })
         })
         .catch(err => {
-            //console.log('masuk catch')
             res.status(500).json({
                 error:err,
                 message:"update status failed"
@@ -62,11 +64,11 @@ class TaskController {
         })
     }
     static deleteTask(req,res) {
-        Task.findOneAndDelete({_id:req.body._id})
+        Task.findOneAndDelete({_id:req.params.id})
         .then(deleted => {
             res.status(200).json({
                 deleted:deleted,
-                _id:req.body._id,
+                _id:req.params.id,
                 message:`successfully deleted`
             })
         })
